@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import DishCard from '@/components/DishCard';
+import MenuCard from '@/components/MenuCard';
 
 export default function Home() {
 	return (
@@ -8,6 +9,7 @@ export default function Home() {
 			<Button variant="outline">Button</Button>
 			<div className="m-4">
 				<DishCard />
+				<MenuCard />
 			</div>
 		</main>
 	);
