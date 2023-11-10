@@ -11,47 +11,25 @@ import {
 import { ShoppingCart } from 'lucide-react';
 import MenuDialog from './MenuDialog';
 import { useState } from 'react';
+import { useCartStore } from '@/app/cartStore';
 
-const menu = {
-	id: '1',
-	name: 'Sushi Itto',
-	description: 'Sushi, Japonesa',
-	image: '/images/katsudon.jpg',
-	company: 'Sushi Itto',
-	dishes: [
-		{
-			name: 'Katsudon',
-			description: 'Arroz con cerdo empanizado',
-			price: 120,
-			image: '/images/katsudon.jpg',
-			category: 'Japonesa',
-			company: 'Sushi Itto',
-			ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-		},
-		{
-			name: 'Sushi',
-			description: 'Arroz con cerdo empanizado',
-			price: 120,
-			image: '/images/katsudon.jpg',
-			category: 'Japonesa',
-			company: 'Sushi Itto',
-			ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-		},
-	],
-};
-
-export default function MenuCard() {
+export default function MenuCard({ menu }) {
 	const [open, setOpen] = useState(false);
-
-	const menuPrice = menu.dishes.reduce((acc, dish) => acc + dish.price, 0);
+	const addMenu = useCartStore((state) => state.addMenu);
 
 	function handleOpen() {
 		setOpen(true);
 	}
 
+	function handleAddMenu(menu) {
+		addMenu(menu);
+	}
+
+	const menuPrice = menu.dishes.reduce((acc, dish) => acc + dish.price, 0);
+
 	return (
 		<Card className="rounded-3xl shadow-lg">
-			<MenuDialog open={open} setOpen={setOpen} />
+			<MenuDialog menu={menu} open={open} setOpen={setOpen} />
 
 			<CardHeader className="cursor-pointer" onClick={handleOpen}>
 				<Image
@@ -78,7 +56,10 @@ export default function MenuCard() {
 
 			<CardFooter className="flex justify-between items-center">
 				<p className="text-red-500 font-bold">${menuPrice}</p>
-				<ShoppingCart className="text-red-500 h-7 w-7" />
+				<ShoppingCart
+					className="text-red-500 h-7 w-7 cursor-pointer"
+					onClick={() => handleAddMenu(menu)}
+				/>
 			</CardFooter>
 		</Card>
 	);

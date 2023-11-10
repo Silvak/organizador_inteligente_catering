@@ -11,26 +11,26 @@ import {
 import DishDialog from './DishDialog';
 import { useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
+import { useCartStore } from '@/app/cartStore';
+import { useToast } from './ui/use-toast';
 
-const dish = {
-	name: 'Katsudon',
-	description: 'Arroz con cerdo empanizado',
-	price: 120,
-	image: '/images/katsudon.jpg',
-	category: 'Japonesa',
-	company: 'Sushi Itto',
-};
-
-export default function DishCard() {
+export default function DishCard({ dish }) {
 	const [open, setOpen] = useState(false);
+	const addDish = useCartStore((state) => state.addDish);
+	const { toast } = useToast();
 
 	function handleOpen() {
 		setOpen(true);
 	}
 
+	function handleAddDish(dish) {
+		addDish(dish);
+		toast({ title: 'Plato agregado al carrito' });
+	}
+
 	return (
 		<Card className="rounded-3xl shadow-lg">
-			<DishDialog open={open} setOpen={setOpen} />
+			<DishDialog dish={dish} open={open} setOpen={setOpen} />
 
 			<CardHeader className="cursor-pointer" onClick={handleOpen}>
 				<Image
@@ -51,7 +51,10 @@ export default function DishCard() {
 
 			<CardFooter className="flex justify-between items-center">
 				<p className="text-red-500 font-bold">${dish.price}</p>
-				<ShoppingCart className="text-red-500 h-7 w-7" />
+				<ShoppingCart
+					className="text-red-500 h-7 w-7 cursor-pointer"
+					onClick={() => handleAddDish(dish)}
+				/>
 			</CardFooter>
 		</Card>
 	);

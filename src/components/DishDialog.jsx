@@ -3,18 +3,24 @@ import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import { ShoppingCart } from 'lucide-react';
 import { Button } from './ui/button';
 import Image from 'next/image';
+import { useCartStore } from '@/app/cartStore';
+import { usePreferencesStore } from '@/app/preferencesStore';
+import { useRouter } from 'next/navigation';
 
-const dish = {
-	name: 'Katsudon',
-	description: 'Arroz con cerdo empanizado',
-	price: 120,
-	image: '/images/katsudon.jpg',
-	category: 'Japonesa',
-	company: 'Sushi Itto',
-	ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-};
+export default function DishDialog({ dish, open, setOpen }) {
+	const addDish = useCartStore((state) => state.addDish);
+	const setDish = usePreferencesStore((state) => state.setDish);
+	const router = useRouter();
 
-export default function DishDialog({ open, setOpen }) {
+	function handleAddDish(dish) {
+		addDish(dish);
+	}
+
+	function handlePreferences(dish) {
+		setDish(dish);
+		router.push('/dish/preferences');
+	}
+
 	return (
 		<Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
 			<DialogContent className="sm:rounded-3xl">
@@ -42,9 +48,15 @@ export default function DishDialog({ open, setOpen }) {
 				</div>
 				<div className="flex justify-between items-center">
 					<p className="text-red-500 font-bold">${dish.price}</p>
-					<ShoppingCart className="text-red-500 h-7 w-7" />
+					<ShoppingCart
+						className="text-red-500 h-7 w-7"
+						onClick={() => handleAddDish(dish)}
+					/>
 				</div>
-				<Button className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 w-full rounded-md shadow-lg">
+				<Button
+					className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 w-full rounded-md shadow-lg"
+					onClick={() => handlePreferences(dish)}
+				>
 					Preferencias
 				</Button>
 			</DialogContent>
