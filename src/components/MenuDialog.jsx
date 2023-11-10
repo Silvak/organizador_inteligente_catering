@@ -8,36 +8,24 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from './ui/accordion';
+import { useCartStore } from '@/app/cartStore';
+import { usePreferencesStore } from '@/app/preferencesStore';
+import { useRouter } from 'next/navigation';
 
-const menu = {
-	id: '1',
-	name: 'Sushi Itto',
-	description: 'Sushi, Japonesa',
-	image: '/images/katsudon.jpg',
-	company: 'Sushi Itto',
-	dishes: [
-		{
-			name: 'Katsudon',
-			description: 'Arroz con cerdo empanizado',
-			price: 120,
-			image: '/images/katsudon.jpg',
-			category: 'Japonesa',
-			company: 'Sushi Itto',
-			ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-		},
-		{
-			name: 'Sushi',
-			description: 'Arroz con cerdo empanizado',
-			price: 120,
-			image: '/images/katsudon.jpg',
-			category: 'Japonesa',
-			company: 'Sushi Itto',
-			ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-		},
-	],
-};
+export default function MenuDialog({ menu, open, setOpen }) {
+	const addMenu = useCartStore((state) => state.addMenu);
+	const setMenu = usePreferencesStore((state) => state.setMenu);
+	const router = useRouter();
 
-export default function MenuDialog({ open, setOpen }) {
+	function handleAddMenu(menu) {
+		addMenu(menu);
+	}
+
+	function handlePreferences(menu) {
+		setMenu(menu);
+		router.push('/menu/preferences');
+	}
+
 	const menuPrice = menu.dishes.reduce((acc, dish) => acc + dish.price, 0);
 
 	return (
@@ -101,9 +89,15 @@ export default function MenuDialog({ open, setOpen }) {
 				</div>
 				<div className="flex justify-between items-center">
 					<p className="text-red-500 font-bold">${menuPrice}</p>
-					<ShoppingCart className="text-red-500 h-7 w-7" />
+					<ShoppingCart
+						className="text-red-500 h-7 w-7 cursor-pointer"
+						onClick={() => handleAddMenu(menu)}
+					/>
 				</div>
-				<Button className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 w-full rounded-md shadow-lg">
+				<Button
+					className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 w-full rounded-md shadow-lg"
+					onClick={() => handlePreferences(menu)}
+				>
 					Preferencias
 				</Button>
 			</DialogContent>
