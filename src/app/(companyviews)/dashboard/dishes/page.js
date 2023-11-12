@@ -2,8 +2,6 @@ import CreateDishDialog from '@/components/CreateDishDialog';
 import CreateMenuDialog from '@/components/CreateMenuDialog';
 import DashboardDishCard from '@/components/DashboardDishCard';
 import DashboardMenuCard from '@/components/DashboardMenuCard';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Eye, Trash } from 'lucide-react';
 
 const dishes = [
 	{

@@ -23,7 +23,7 @@ export default function MenuDialog({ menu, open, setOpen }) {
 
 	function handlePreferences(menu) {
 		setMenu(menu);
-		router.push('/menu/preferences');
+		router.push('/preferences/menu');
 	}
 
 	const menuPrice = menu.dishes.reduce((acc, dish) => acc + dish.price, 0);

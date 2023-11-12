@@ -18,7 +18,7 @@ export default function DishDialog({ dish, open, setOpen }) {
 
 	function handlePreferences(dish) {
 		setDish(dish);
-		router.push('/dish/preferences');
+		router.push('/preferences/dish');
 	}
 
 	return (
