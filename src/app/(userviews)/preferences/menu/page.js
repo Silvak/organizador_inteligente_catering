@@ -17,13 +17,13 @@ import SelectIngredients from '@/components/SelectIngredients';
 export default function DishPreferences() {
 	const router = useRouter();
 	const menu = usePreferencesStore((state) => state.menu);
+	console.log(menu);
 	const clear = usePreferencesStore((state) => state.clear);
 	const [tempDishes, setTempDishes] = useState([...menu.dishes]);
 	const addMenu = useCartStore((state) => state.addMenu);
 
 	function handleAddToCart() {
 		addMenu({ ...menu, dishes: [...tempDishes] });
-		clear();
 		router.push('/cart');
 	}
 
