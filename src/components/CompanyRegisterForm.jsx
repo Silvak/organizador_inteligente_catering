@@ -22,9 +22,7 @@ import { Loader2, LockKeyhole, Mail, MapPin, Phone, User } from 'lucide-react';
 
 const registerSchema = z
 	.object({
-		displayName: z
-			.string()
-			.min(2, 'displayName must contain at least 2 characters'),
+		name: z.string().min(2, 'Name must contain at least 2 characters'),
 		email: z.string().email(),
 		phone: z.string({ required_error: 'Phone number is required' }),
 		password: z
@@ -97,16 +95,16 @@ export default function CompanyRegisterForm() {
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<FormField
 					control={form.control}
-					name="displayName"
+					name="name"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel className="font-semibold text-gray-600 text-base">
-								Nombre de usuario
+								Nombre
 							</FormLabel>
 							<FormControl>
 								<div className="flex items-center">
 									<Input
-										placeholder="Establezca su nombre de usuario"
+										placeholder="Establezca el nombre de su empresa"
 										type="text"
 										className="bg-white dark:bg-blue-200/10 border-x-0 border-t-0 border-b-1 border-gray-300 rounded-none focus-visible:ring-0 focus-visible:border-b-2 pl-8"
 										{...field}
