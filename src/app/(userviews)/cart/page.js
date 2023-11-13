@@ -8,6 +8,9 @@ import {
 } from '@/components/ui/card';
 import { useCartStore } from '../../cartStore';
 import { Eye, Trash } from 'lucide-react';
+import CartEditDishDialog from '@/components/CartEditDishDialog';
+import CartDishCard from '@/components/CartDihsCard';
+import CartMenuCard from '@/components/CartMenuCard';
 
 export default function Cart() {
 	const dishes = useCartStore((state) => state.dishes);
@@ -24,58 +27,32 @@ export default function Cart() {
 					</h2>
 				</div>
 			) : (
-				<section>
-					<div className="space-y-4">
-						{dishes.map((dish) => (
-							<Card key={dish.id} className="rounded-3xl shadow-xl">
-								<CardHeader className="pb-2">
-									<div className="flex justify-between items-center">
-										<h2 className="text-lg font-semibold text-gray-700">
-											{dish.name}
-										</h2>
+				<>
+					{dishes.length > 0 && (
+						<section>
+							<h2 className="text-lg font-semibold text-red-500 mb-2">
+								Dishes
+							</h2>
+							<div className="space-y-4">
+								{dishes.map((dish) => (
+									<CartDishCard key={dish.id} dish={dish} />
+								))}
+							</div>
+						</section>
+					)}
 
-										<div className="flex gap-2 items-center">
-											<Eye className="text-red-500 cursor-pointer h-7 w-7" />
-											<Trash className="text-red-500 cursor-pointer" />
-										</div>
-									</div>
-								</CardHeader>
-								<CardContent className="pb-2">
-									<p className="text-gray-700">{dish.description}</p>
-								</CardContent>
-								<CardFooter>
-									<p className="text-red-500 font-bold">${dish.price}</p>
-								</CardFooter>
-							</Card>
-						))}
-					</div>
-					<div>
-						{menus.map((menu) => (
-							<Card key={menu.id} className="rounded-3xl shadow-xl">
-								<CardHeader className="pb-2">
-									<div className="flex justify-between items-center">
-										<h2 className="text-lg font-semibold text-gray-700">
-											{menu.name}
-										</h2>
+					{menus.length > 0 && (
+						<section>
+							<h2 className="text-lg font-semibold text-red-500 mb-2">Menus</h2>
 
-										<div className="flex gap-2 items-center">
-											<Eye className="text-red-500 cursor-pointer h-7 w-7" />
-											<Trash className="text-red-500 cursor-pointer" />
-										</div>
-									</div>
-								</CardHeader>
-								<CardContent className="pb-2">
-									<p className="text-gray-700">{menu.description}</p>
-								</CardContent>
-								<CardFooter>
-									<p className="text-red-500 font-bold">
-										${menu.dishes.reduce((acc, dish) => acc + dish.price, 0)}
-									</p>
-								</CardFooter>
-							</Card>
-						))}
-					</div>
-				</section>
+							<div>
+								{menus.map((menu) => (
+									<CartMenuCard key={menu.id} menu={menu} />
+								))}
+							</div>
+						</section>
+					)}
+				</>
 			)}
 		</div>
 	);
