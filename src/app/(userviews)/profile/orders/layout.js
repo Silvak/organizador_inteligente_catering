@@ -1,4 +1,4 @@
-import DashboardNavbar from '@/components/DashboardNavbar';
+import ProfileNavbar from '@/components/ProfileNavbar';
 
 export default function Layout({ children }) {
 	return (
@@ -6,12 +6,14 @@ export default function Layout({ children }) {
 			<div className="flex gap-4 bg-[#F86260] rounded-2xl p-8 shadow-xl">
 				<div className="h-20 w-20 rounded-full bg-gray-500"></div>
 				<div>
-					<h1 className="text-xl font-semibold text-white">Empresa</h1>
-					<p className="text-base text-white">Descripción</p>
+					<h1 className="text-xl font-semibold text-white">
+						Nombre y Apellido
+					</h1>
+					<p className="text-base text-white">Correo</p>
 				</div>
 			</div>
 
-			<DashboardNavbar />
+			<ProfileNavbar />
 
 			<div className="my-8">{children}</div>
 		</>

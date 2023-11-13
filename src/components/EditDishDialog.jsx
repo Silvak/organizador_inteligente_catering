@@ -118,7 +118,7 @@ export default function EditDishDialog({ dish }) {
 
 						<Button
 							type="submit"
-							className="w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-xl"
+							className="w-full bg-[#F86260] rounded-xl"
 							disabled={status == 'pending'}
 						>
 							{status == 'pending' ? (

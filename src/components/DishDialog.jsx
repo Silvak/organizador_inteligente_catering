@@ -54,7 +54,7 @@ export default function DishDialog({ dish, open, setOpen }) {
 					/>
 				</div>
 				<Button
-					className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 w-full rounded-md shadow-lg"
+					className="bg-[#F86260] w-full rounded-md shadow-lg"
 					onClick={() => handlePreferences(dish)}
 				>
 					Preferencias

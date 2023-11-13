@@ -98,9 +98,7 @@ export default function CreateMenuDialog() {
 			}
 		>
 			<DialogTrigger asChild>
-				<Button className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500">
-					Agregar Menu
-				</Button>
+				<Button className="bg-[#F86260]">Agregar Menu</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader className="mb-2">
@@ -120,7 +118,7 @@ export default function CreateMenuDialog() {
 
 						<Button
 							type="submit"
-							className="w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500"
+							className="w-full bg-[#F86260]"
 							disabled={status == 'pending'}
 						>
 							{status == 'pending' ? (

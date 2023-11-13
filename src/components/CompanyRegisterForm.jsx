@@ -261,10 +261,7 @@ export default function CompanyRegisterForm() {
 					/>
 				</div>
 
-				<Button
-					type="submit"
-					className="w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 mt-8  rounded-md"
-				>
+				<Button type="submit" className="w-full bg-[#F86260] mt-8  rounded-md">
 					{status == 'pending' ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
