@@ -166,6 +166,7 @@ export default function Order() {
 			<h1 className="text-2xl font-bold text-red-500">Pedido</h1>
 
 			<section>
+				{/* if user show company name here */}
 				<h2 className="text-xl font-semibold text-red-500">Usuario</h2>
 				<p>
 					<span className="font-medium">Fecha del pedido:</span>{' '}
@@ -183,9 +184,8 @@ export default function Order() {
 					<p>{new Date().toLocaleDateString()}</p>
 				</div>
 
-				<Button className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500">
-					Marcar como completada
-				</Button>
+				{/* if user show status here */}
+				<Button className="bg-[#F86260]">Marcar como completada</Button>
 			</section>
 
 			<section>
@@ -195,7 +195,7 @@ export default function Order() {
 						{dishes.map((dish) => (
 							<AccordionItem
 								value={dish.id}
-								key={dish.name}
+								key={dish.id}
 								className=" shadow-lg"
 							>
 								<AccordionTrigger className="hover:no-underline">

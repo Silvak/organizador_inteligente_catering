@@ -71,7 +71,7 @@ export default function CartEditDishDialog({ dish }) {
 				</div>
 
 				<Button
-					className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-md shadow-lg"
+					className="bg-[#F86260] rounded-md shadow-lg"
 					onClick={handleAddToCart}
 				>
 					Editar

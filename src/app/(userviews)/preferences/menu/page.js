@@ -57,7 +57,7 @@ export default function DishPreferences() {
 			<div className="flex flex-col space-y-2 items-end mt-10">
 				{/* <p className="text-red-500 font-bold">${dish.price}</p> */}
 				<Button
-					className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-md shadow-lg"
+					className="bg-[#F86260] rounded-md shadow-lg"
 					onClick={handleAddToCart}
 				>
 					Agregar al carrito

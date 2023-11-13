@@ -21,7 +21,7 @@ export default function Sidebar() {
 	};
 
 	return (
-		<nav className="h-[76vh] w-64 bg-gradient-to-b from-red-500 via-orange-500 to-yellow-500 shadow-lg overflow-y-auto rounded-tr-lg rounded-br-lg flex flex-col justify-between">
+		<nav className="h-[76vh] w-64 bg-[#F86260] shadow-lg overflow-y-auto rounded-tr-lg rounded-br-lg flex flex-col justify-between">
 			<div>
 				<div>
 					<div className="flex items-end justify-start h-12 text-white pl-4">

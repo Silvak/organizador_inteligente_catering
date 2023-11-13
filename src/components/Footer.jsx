@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function Footer() {
 	return (
-		<section className="flex justify-center text-white items-center w-full border-t border-gray-300/60 bg-gradient-to-r from-yellow-500 to-red-500">
+		<section className="flex justify-center text-white items-center w-full border-t border-gray-300/60 bg-[#F86260]">
 			<div className="grid grid-cols-1 lg:grid-cols-3 h-full w-full max-w-[1250px] pt-8 pb-2 lg:gap-x-[290px] gap-y-12 lg:gap-y-0 gap-32">
 				{/* Primera columna */}
 				<div className="flex flex-col items-center justify-start text-sm lg:mb-8">
