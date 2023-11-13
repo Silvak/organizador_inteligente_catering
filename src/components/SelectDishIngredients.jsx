@@ -1,7 +1,4 @@
-'use client';
-
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
+import { Checkbox } from './ui/checkbox';
 import {
 	Form,
 	FormControl,
@@ -10,37 +7,8 @@ import {
 	FormLabel,
 	FormMessage,
 } from './ui/form';
-import { Checkbox } from './ui/checkbox';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
 
-const FormSchema = z.object({
-	ingredients: z
-		.array(z.string())
-		.refine((value) => value.some((ingredient) => ingredient), {
-			message: 'Tienes que seleccionar al menos un ingrediente.',
-		}),
-});
-
-export default function SelectIngredients({ dish, defaultValues, setDishes }) {
-	const { watch, ...form } = useForm({
-		resolver: zodResolver(FormSchema),
-		defaultValues: {
-			ingredients: [...defaultValues],
-		},
-	});
-
-	useEffect(() => {
-		const subscription = watch((value) => {
-			setDishes((prev) =>
-				prev.map((d) =>
-					d.id == dish.id ? { ...d, ingredients: value.ingredients } : d
-				)
-			);
-		});
-		return () => subscription.unsubscribe();
-	}, [watch, dish.id, setDishes]);
-
+export default function SelectDishIngredients({ dish, form }) {
 	return (
 		<Form {...form}>
 			<form className="space-y-8">

@@ -12,13 +12,13 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion';
 import { useState } from 'react';
-import SelectIngredients from '@/components/SelectIngredients';
+import SelectIngredients from '@/components/SelectMenuDishesIngredients';
+import EditMenuDishes from '@/components/EditMenuDishes';
 
 export default function DishPreferences() {
 	const router = useRouter();
 	const menu = usePreferencesStore((state) => state.menu);
-	console.log(menu);
-	const clear = usePreferencesStore((state) => state.clear);
+
 	const [tempDishes, setTempDishes] = useState([...menu.dishes]);
 	const addMenu = useCartStore((state) => state.addMenu);
 
@@ -36,44 +36,11 @@ export default function DishPreferences() {
 						<p>{menu.description}</p>
 					</div>
 
-					<Accordion type="single" collapsible className="space-y-2">
-						{menu.dishes.map((dish) => (
-							<AccordionItem
-								value={dish.name}
-								key={dish.name}
-								className=" shadow-lg"
-							>
-								<AccordionTrigger className="hover:no-underline">
-									<div>
-										<div className="flex gap-4">
-											<Image
-												src={dish.image}
-												alt={dish.name}
-												width={200}
-												height={200}
-												className="rounded-2xl border w-1/4"
-											/>
-											<div className="w-1/2 space-y-2 text-gray-700 text-start">
-												<h1 className="text-lg font-semibold">{dish.name}</h1>
-												<p>{dish.description}</p>
-											</div>
-										</div>
-									</div>
-								</AccordionTrigger>
-								<AccordionContent>
-									<div className="w-1/2 space-y-2 text-gray-700">
-										<SelectIngredients
-											dish={dish}
-											defaultValues={
-												tempDishes.filter((d) => d.id == dish.id)[0].ingredients
-											}
-											setDishes={setTempDishes}
-										/>
-									</div>
-								</AccordionContent>
-							</AccordionItem>
-						))}
-					</Accordion>
+					<EditMenuDishes
+						menu={menu}
+						tempDishes={tempDishes}
+						setTempDishes={setTempDishes}
+					/>
 				</div>
 
 				{/* <div className="">

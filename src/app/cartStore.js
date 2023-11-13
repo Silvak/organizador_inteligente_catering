@@ -43,4 +43,19 @@ export const useCartStore = create((set) => ({
 		set((state) => ({ dishes: state.dishes.filter((d) => d.id !== dish.id) })),
 	removeMenu: (menu) =>
 		set((state) => ({ menus: state.menus.filter((m) => m.id !== menu.id) })),
+	editDish: (dish) =>
+		set((state) => {
+			const newDishes = state.dishes.map((d) =>
+				d.id === dish.id ? { ...dish } : d
+			);
+
+			return {
+				dishes: newDishes,
+			};
+		}),
+
+	editMenu: (menu) =>
+		set((state) => ({
+			menus: state.menus.map((m) => (m.id === menu.id ? menu : m)),
+		})),
 }));
