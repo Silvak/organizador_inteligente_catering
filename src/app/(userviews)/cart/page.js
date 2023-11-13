@@ -11,10 +11,13 @@ import { Eye, Trash } from 'lucide-react';
 import CartEditDishDialog from '@/components/CartEditDishDialog';
 import CartDishCard from '@/components/CartDihsCard';
 import CartMenuCard from '@/components/CartMenuCard';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function Cart() {
 	const dishes = useCartStore((state) => state.dishes);
 	const menus = useCartStore((state) => state.menus);
+	const router = useRouter();
 
 	return (
 		<div className="space-y-8">
@@ -54,6 +57,12 @@ export default function Cart() {
 					)}
 				</>
 			)}
+
+			<div className="flex justify-end">
+				<Button className="bg-red-500" onClick={() => router.push('/summary')}>
+					Hacer oferta
+				</Button>
+			</div>
 		</div>
 	);
 }
