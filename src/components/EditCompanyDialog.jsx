@@ -18,7 +18,7 @@ import { getImgSrc } from '@/lib/utils';
 import { useToast } from './ui/use-toast';
 import UploadImageOnModal from './UploadImageOnModal';
 import { uploadDishImage } from '@/services/dish.services';
-import { editCompany, getCompany } from '@/services/user.services';
+import { editCompany, getUser } from '@/services/user.services';
 import CompanyRegisterForm from './CompanyRegisterForm';
 
 const editCompanySchema = z.object({
@@ -36,7 +36,7 @@ const company = {
 export default function EditCompanyDialog({ id }) {
 	const { data, status: companyStatus } = useQuery({
 		queryKey: ['company', id],
-		queryFn: getCompany(id),
+		queryFn: getUser(id),
 	});
 	const [isOpen, setIsOpen] = useState(false);
 	const form = useForm({

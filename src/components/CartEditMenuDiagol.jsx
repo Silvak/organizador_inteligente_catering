@@ -3,23 +3,22 @@
 import { Eye } from 'lucide-react';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
-import Image from 'next/image';
 import { useCartStore } from '@/app/cartStore';
 import { useState } from 'react';
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from './ui/accordion';
-import SelectIngredients from './SelectMenuDishesIngredients';
 import EditMenuDishes from './EditMenuDishes';
+import { useQuery } from '@tanstack/react-query';
+import { getMenu } from '@/services/dish.services';
 
 export default function CartEditMenuDialog({ menu }) {
 	// when backend ready, get dish from backend, and get default ingredients from store or props
 	const [open, setOpen] = useState(false);
 	const [tempDishes, setTempDishes] = useState([...menu.dishes]);
 	const editMenu = useCartStore((state) => state.editMenu);
+
+	const { data, status } = useQuery({
+		queryKey: ['menu', menu.id],
+		queryFn: () => getMenu(menu.id),
+	});
 
 	function handleEditMenu() {
 		editMenu({ ...menu, dishes: [...tempDishes] });

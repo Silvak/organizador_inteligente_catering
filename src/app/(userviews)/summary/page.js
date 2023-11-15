@@ -1,5 +1,6 @@
 'use client';
 
+import SuccessOrderDialog from '@/app/SuccessOrderDialog';
 import { useCartStore } from '@/app/cartStore';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -18,10 +19,13 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
+import { createOrder } from '@/services/order.services';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { CalendarIcon, Mail, MapPin, Phone, User } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -49,6 +53,13 @@ export default function Summary() {
 		},
 	});
 
+	const { mutate, status } = useMutation({
+		mutationFn: createOrder,
+	});
+
+	const [order, setOrder] = useState(null);
+	const [open, setOpen] = useState(false);
+
 	const dishes = useCartStore((state) => state.dishes);
 	const menus = useCartStore((state) => state.menus);
 	const totalDishes = dishes.reduce((acc, dish) => acc + dish.price, 0);
@@ -59,11 +70,18 @@ export default function Summary() {
 
 	function onSubmit(data) {
 		console.log(data);
+		mutate(data, {
+			onSuccess: (data) => {
+				setOrder(data?.data);
+				setOpen(true);
+			},
+		});
 	}
 
 	return (
 		<div className="space-y-8">
 			<h1 className="text-2xl font-bold text-red-500">Resumen de orden</h1>
+			<SuccessOrderDialog order={order} open={open} />
 
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>

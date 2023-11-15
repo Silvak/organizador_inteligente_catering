@@ -11,14 +11,17 @@ import {
 import { useCartStore } from '@/app/cartStore';
 import { usePreferencesStore } from '@/app/preferencesStore';
 import { useRouter } from 'next/navigation';
+import { useToast } from './ui/use-toast';
 
 export default function MenuDialog({ menu, open, setOpen }) {
 	const addMenu = useCartStore((state) => state.addMenu);
 	const setMenu = usePreferencesStore((state) => state.setMenu);
 	const router = useRouter();
+	const { toast } = useToast();
 
 	function handleAddMenu(menu) {
 		addMenu(menu);
+		toast({ title: 'Menu agregado al carrito' });
 	}
 
 	function handlePreferences(menu) {
@@ -95,7 +98,7 @@ export default function MenuDialog({ menu, open, setOpen }) {
 					/>
 				</div>
 				<Button
-					className="bg-[#F86260] w-full rounded-md shadow-lg"
+					className="bg-[#F86260] hover:bg-red-500 w-full rounded-md shadow-lg"
 					onClick={() => handlePreferences(menu)}
 				>
 					Preferencias

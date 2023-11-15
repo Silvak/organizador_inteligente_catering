@@ -31,3 +31,23 @@ export const deleteDish = (dishId) => () =>
 
 export const deleteMenu = (menuId) => () =>
 	apiInstanceWithAuth.delete(`/menu/${menuId}`);
+
+export const getDishes = async ({ limit, offset, term }) => {
+	const data = await apiInstanceWithAuth.get('/dishes', {
+		params: { limit, offset, term },
+	});
+
+	return data.data;
+};
+
+export const getMenus = async ({ limit, offset, term }) => {
+	const data = await apiInstanceWithAuth.get('/menus', {
+		params: { limit, offset, term },
+	});
+
+	return data.data;
+};
+
+export const getDish = (dishId) => apiInstanceWithAuth.get(`/dish/${dishId}`);
+
+export const getMenu = (menuId) => apiInstanceWithAuth.get(`/menu/${menuId}`);

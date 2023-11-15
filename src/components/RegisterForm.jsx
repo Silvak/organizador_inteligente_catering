@@ -237,7 +237,10 @@ export default function RegisterForm() {
 					/>
 				</div>
 
-				<Button type="submit" className="w-full bg-[#F86260] mt-8  rounded-md">
+				<Button
+					type="submit"
+					className="w-full bg-[#F86260] hover:bg-red-500 mt-8  rounded-md"
+				>
 					{status == 'pending' ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />

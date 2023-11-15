@@ -10,6 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useCartStore } from '@/app/cartStore';
 import { useState } from 'react';
 import SelectDishIngredients from './SelectDishIngredients';
+import { useQuery } from '@tanstack/react-query';
+import { getDish } from '@/services/dish.services';
 
 const FormSchema = z.object({
 	ingredients: z
@@ -20,9 +22,12 @@ const FormSchema = z.object({
 });
 
 export default function CartEditDishDialog({ dish }) {
-	// when backend ready, get dish from backend, and get default ingredients from store or props
 	const [open, setOpen] = useState(false);
 	const editDish = useCartStore((state) => state.editDish);
+	const { data, status } = useQuery({
+		queryKey: ['dish', dish.id],
+		queryFn: () => getDish(dish.id),
+	});
 
 	const form = useForm({
 		resolver: zodResolver(FormSchema),

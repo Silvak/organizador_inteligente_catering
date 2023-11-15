@@ -1,56 +1,25 @@
-import { Button } from '@/components/ui/button';
-import DishCard from '@/components/DishCard';
-import MenuCard from '@/components/MenuCard';
+'use client';
 
-const dish = {
-	id: '1',
-	name: 'Katsudon',
-	description: 'Arroz con cerdo empanizado',
-	price: 120,
-	image: '/images/katsudon.jpg',
-	category: 'Japonesa',
-	company: 'Sushi Itto',
-	ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-};
+import CompaniesSection from '@/components/CompaniesSection';
+import DishesSection from '@/components/DishesSection';
+import MenusSection from '@/components/MenusSection';
+import Search from '@/components/search';
+import useDebounce from '@/hooks/useDebounce';
+import { useState } from 'react';
 
-const menu = {
-	id: '1',
-	name: 'Sushi Itto',
-	description: 'Sushi, Japonesa',
-	image: '/images/katsudon.jpg',
-	company: 'Sushi Itto',
-	dishes: [
-		{
-			id: '1',
-			name: 'Katsudon',
-			description: 'Arroz con cerdo empanizado',
-			price: 120,
-			image: '/images/katsudon.jpg',
-			category: 'Japonesa',
-			company: 'Sushi Itto',
-			ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-		},
-		{
-			id: '2',
-			name: 'Sushi',
-			description: 'Arroz con cerdo empanizado',
-			price: 120,
-			image: '/images/katsudon.jpg',
-			category: 'Japonesa',
-			company: 'Sushi Itto',
-			ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-		},
-	],
-};
+export default function Page() {
+	const [search, setSearch] = useState('');
+	const debouncedSearch = useDebounce(search, 500);
+	const limit = 6;
 
-export default function page() {
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-center gap-8 p-12">
-			<h1 className="text-6xl font-bold text-center">Home</h1>
+		<main className="space-y-12">
+			<Search search={search} setSearch={setSearch} />
 
-			<div className="m-4">
-				<DishCard dish={dish} />
-				<MenuCard menu={menu} />
+			<div className=" space-y-8">
+				<DishesSection limit={limit} search={debouncedSearch} />
+				<MenusSection limit={limit} search={debouncedSearch} />
+				<CompaniesSection />
 			</div>
 		</main>
 	);
