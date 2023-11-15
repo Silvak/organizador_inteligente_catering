@@ -1,3 +1,7 @@
+'use client';
+
+import OrderDishAccordion from '@/app/OrderDishAccordion';
+import OrderMenuAccordion from '@/components/OrderMenuAccordion';
 import {
 	Accordion,
 	AccordionContent,
@@ -5,6 +9,9 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import { getOrders } from '@/services/order.services';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
 const dishes = [
@@ -160,160 +167,82 @@ const menus = [
 	},
 ];
 
-export default function Order() {
+export default function Order({ params }) {
+	const { id } = params;
+	const { data: session, status } = useSession();
+
+	const { data: orderData, status: orderStatus } = useQuery({
+		queryKey: ['order', id],
+		queryFn: () => getOrders(id),
+	});
+
 	return (
 		<div className="space-y-8">
 			<h1 className="text-2xl font-bold text-red-500">Pedido</h1>
+			{orderStatus == 'pending' ? (
+				<div>Cargando</div>
+			) : (
+				<>
+					<section>
+						{status == 'authenticated' &&
+							session.user.user.role === 'COMPANY_ROLE' && (
+								<h2 className="text-xl font-semibold text-red-500">
+									{orderData?.user.user.name}
+								</h2>
+							)}
+						{status == 'authenticated' &&
+							session.user.user.role === 'USER_ROLE' && (
+								<h2 className="text-xl font-semibold text-red-500">
+									{orderData?.user.user.company}
+								</h2>
+							)}
+						<h2 className="text-xl font-semibold text-red-500">Usuario</h2>
+						<p>
+							<span className="font-medium">Fecha del pedido:</span>{' '}
+							{new Date().toLocaleDateString()}
+						</p>
+					</section>
 
-			<section>
-				{/* if user show company name here */}
-				<h2 className="text-xl font-semibold text-red-500">Usuario</h2>
-				<p>
-					<span className="font-medium">Fecha del pedido:</span>{' '}
-					{new Date().toLocaleDateString()}
-				</p>
-			</section>
+					<section className="flex items-center justify-between">
+						<div className="text-center">
+							<h3 className="font-medium text-lg">Cantidad de personas</h3>
+							<p>4</p>
+						</div>
+						<div className="text-center">
+							<h3 className="font-medium text-lg">Fecha de entrega</h3>
+							<p>{new Date().toLocaleDateString()}</p>
+						</div>
 
-			<section className="flex items-center justify-between">
-				<div className="text-center">
-					<h3 className="font-medium text-lg">Cantidad de personas</h3>
-					<p>4</p>
-				</div>
-				<div className="text-center">
-					<h3 className="font-medium text-lg">Fecha de entrega</h3>
-					<p>{new Date().toLocaleDateString()}</p>
-				</div>
+						{status == 'authenticated' &&
+							session.user.user.role === 'COMPANY_ROLE' && (
+								<Button className="bg-[#F86260]">Marcar como completada</Button>
+							)}
+						{status == 'authenticated' &&
+							session.user.user.role === 'USER_ROLE' && (
+								<div className="text-center">
+									<h3 className="font-medium text-lg">Estado</h3>
+									<p>Pendiente</p>
+								</div>
+							)}
 
-				{/* if user show status here */}
-				<Button className="bg-[#F86260]">Marcar como completada</Button>
-			</section>
+						{/* if user show status here */}
+						<Button className="bg-[#F86260]">Marcar como completada</Button>
+					</section>
 
-			<section>
-				<h2 className="text-xl font-semibold text-red-500">Platos</h2>
-				<div>
-					<Accordion type="single" collapsible className="space-y-2">
-						{dishes.map((dish) => (
-							<AccordionItem
-								value={dish.id}
-								key={dish.id}
-								className=" shadow-lg"
-							>
-								<AccordionTrigger className="hover:no-underline">
-									<div>
-										<div className="flex gap-4">
-											<Image
-												src={dish.image}
-												alt={dish.name}
-												width={200}
-												height={200}
-												className="rounded-2xl border w-1/4"
-											/>
-											<div className="w-1/2 space-y-2 text-gray-700 text-start">
-												<h1 className="text-lg font-semibold">{dish.name}</h1>
-												<p>{dish.description}</p>
-											</div>
-										</div>
-									</div>
-								</AccordionTrigger>
-								<AccordionContent>
-									<div className="w-1/2 space-y-2 text-gray-700">
-										<h1 className="text-lg font-semibold">Ingredientes</h1>
-										<ul>
-											{dish.ingredients.map((ingredient) => (
-												<p key={ingredient}>{ingredient}</p>
-											))}
-										</ul>
-									</div>
-								</AccordionContent>
-							</AccordionItem>
-						))}
-					</Accordion>
-				</div>
-			</section>
-			<section>
-				<h2 className="text-xl font-semibold text-red-500">Menus</h2>
-				<div>
-					<Accordion type="single" collapsible className="space-y-2">
-						{menus.map((menu) => (
-							<AccordionItem
-								value={menu.id}
-								key={menu.name}
-								className=" shadow-lg"
-							>
-								<AccordionTrigger className="hover:no-underline">
-									<div>
-										<div className="flex gap-4">
-											<Image
-												src={menu.image}
-												alt={menu.name}
-												width={200}
-												height={200}
-												className="rounded-2xl border w-1/4"
-											/>
-											<div className="w-1/2 space-y-2 text-gray-700 text-start">
-												<h1 className="text-lg font-semibold">{menu.name}</h1>
-												<p>{menu.description}</p>
-											</div>
-										</div>
-									</div>
-								</AccordionTrigger>
-								<AccordionContent>
-									<div className="w-1/2 space-y-2 text-gray-700">
-										<h1 className="text-lg font-semibold">Platos</h1>
-										<div>
-											<Accordion
-												type="single"
-												collapsible
-												className="space-y-2"
-											>
-												{menu.dishes.map((dish) => (
-													<AccordionItem
-														value={dish.id}
-														key={dish.name}
-														className=" shadow-lg"
-													>
-														<AccordionTrigger className="hover:no-underline">
-															<div>
-																<div className="flex gap-4">
-																	<Image
-																		src={dish.image}
-																		alt={dish.name}
-																		width={200}
-																		height={200}
-																		className="rounded-2xl border w-1/4"
-																	/>
-																	<div className="w-1/2 space-y-2 text-gray-700 text-start">
-																		<h1 className="text-lg font-semibold">
-																			{dish.name}
-																		</h1>
-																		<p>{dish.description}</p>
-																	</div>
-																</div>
-															</div>
-														</AccordionTrigger>
-														<AccordionContent>
-															<div className="w-1/2 space-y-2 text-gray-700">
-																<h1 className="text-lg font-semibold">
-																	Ingredientes
-																</h1>
-																<ul>
-																	{dish.ingredients.map((ingredient) => (
-																		<p key={ingredient}>{ingredient}</p>
-																	))}
-																</ul>
-															</div>
-														</AccordionContent>
-													</AccordionItem>
-												))}
-											</Accordion>
-										</div>
-									</div>
-								</AccordionContent>
-							</AccordionItem>
-						))}
-					</Accordion>
-				</div>
-			</section>
+					<section>
+						<h2 className="text-xl font-semibold text-red-500">Platos</h2>
+						<div>
+							<OrderDishAccordion dishes={dishes} />
+						</div>
+					</section>
+					<section>
+						<h2 className="text-xl font-semibold text-red-500">Menus</h2>
+						<div>
+							<OrderMenuAccordion menus={menus} />
+						</div>
+					</section>
+				</>
+			)}
 		</div>
 	);
 }

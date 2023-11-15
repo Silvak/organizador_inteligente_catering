@@ -48,13 +48,12 @@ export default function DishDialog({ dish, open, setOpen }) {
 				</div>
 				<div className="flex justify-between items-center">
 					<p className="text-red-500 font-bold">${dish.price}</p>
-					<ShoppingCart
-						className="text-red-500 h-7 w-7"
-						onClick={() => handleAddDish(dish)}
-					/>
+					<Button variant="ghost" onClick={() => handleAddDish(dish)}>
+						<ShoppingCart className="text-red-500 h-7 w-7 cursor-pointer" />
+					</Button>
 				</div>
 				<Button
-					className="bg-[#F86260] w-full rounded-md shadow-lg"
+					className="bg-[#F86260] hover:bg-red-500 w-full rounded-md shadow-lg"
 					onClick={() => handlePreferences(dish)}
 				>
 					Preferencias

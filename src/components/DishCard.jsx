@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/app/cartStore';
 import { useToast } from './ui/use-toast';
+import { Button } from './ui/button';
 
 export default function DishCard({ dish }) {
 	const [open, setOpen] = useState(false);
@@ -51,10 +52,9 @@ export default function DishCard({ dish }) {
 
 			<CardFooter className="flex justify-between items-center">
 				<p className="text-red-500 font-bold">${dish.price}</p>
-				<ShoppingCart
-					className="text-red-500 h-7 w-7 cursor-pointer"
-					onClick={() => handleAddDish(dish)}
-				/>
+				<Button variant="ghost" onClick={() => handleAddDish(dish)}>
+					<ShoppingCart className="text-red-500 h-7 w-7 cursor-pointer" />
+				</Button>
 			</CardFooter>
 		</Card>
 	);

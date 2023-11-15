@@ -9,8 +9,8 @@ export const signUp = (userData) =>
 export const editCompany = (companyId) => (companyData) =>
 	apiInstanceWithAuth.put(`/user/${companyId}`, companyData);
 
-export const getCompany = (companyId) => () =>
-	apiInstanceWithAuth.get(`/user/${companyId}`);
+export const getUser = (userId) => () =>
+	apiInstanceWithAuth.get(`/user/${userId}`);
 
 export const deleteCompany = (companyId) => () =>
 	apiInstanceWithAuth.delete(`/user/${companyId}`);

@@ -12,10 +12,12 @@ import { ShoppingCart } from 'lucide-react';
 import MenuDialog from './MenuDialog';
 import { useState } from 'react';
 import { useCartStore } from '@/app/cartStore';
+import { useToast } from './ui/use-toast';
 
 export default function MenuCard({ menu }) {
 	const [open, setOpen] = useState(false);
 	const addMenu = useCartStore((state) => state.addMenu);
+	const { toast } = useToast();
 
 	function handleOpen() {
 		setOpen(true);
@@ -23,6 +25,7 @@ export default function MenuCard({ menu }) {
 
 	function handleAddMenu(menu) {
 		addMenu(menu);
+		toast({ title: 'Menu agregado al carrito' });
 	}
 
 	const menuPrice = menu.dishes.reduce((acc, dish) => acc + dish.price, 0);

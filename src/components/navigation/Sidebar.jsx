@@ -2,18 +2,26 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import { Button } from '../ui/button';
-import { LogOut } from 'lucide-react';
+import { Home, LayoutDashboard, LogOut, ShoppingCart } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useQuery } from '@tanstack/react-query';
 
-const SidebarLink = ({ href, icon, text }) => (
-	<li className="text-white p-2 hover:bg-gray-200 cursor-pointer">
-		<Link href={href} className="flex items-center">
-			<img src={icon} alt={text} className="w-5 h-5 mr-2" />
-			{text}
-		</Link>
-	</li>
-);
+// const SidebarLink = ({ href, icon, text }) => (
+// 	<li className="text-white p-2 hover:bg-gray-200 cursor-pointer">
+// 		<Link href={href} className="flex items-center">
+// 			<img src={icon} alt={text} className="w-5 h-5 mr-2" />
+// 			{text}
+// 		</Link>
+// 	</li>
+// );
 
 export default function Sidebar() {
+	const { data: session, status } = useSession();
+	const { data, userStatus } = useQuery({
+		queryKey: ['user', session?.user?.user._id],
+		queryFn: () => getUser(session?.user?.user._id),
+	});
+
 	const userName = 'Usuario Ejemplo';
 
 	const handleLogout = () => {
@@ -46,21 +54,49 @@ export default function Sidebar() {
 						</div>
 
 						<ul className="flex flex-col mt-4 cursor-pointer">
-							<SidebarLink
-								href="/home"
-								icon="/assets/mdi_house.png"
-								text="Home"
-							/>
-							<SidebarLink
+							<Link
+								href="/dashboard"
+								className="flex items-center text-white p-2 gap-2"
+							>
+								<Home />
+								Home
+							</Link>
+
+							<Link
 								href="/cart"
-								icon="/assets/mdi_cart.png"
-								text="Carrito"
-							/>
+								className="flex items-center text-white p-2 gap-2"
+							>
+								<ShoppingCart />
+								Carrito
+							</Link>
+
+							{/* {status == 'authenticated' &&
+								session?.user?.user?.role == 'COMPANY_ROLE' && ( */}
+							<Link
+								href="/dashboard/dishes"
+								className="flex items-center text-white p-2 gap-2"
+							>
+								<LayoutDashboard />
+								Dashboard
+							</Link>
+							{/* )} */}
 						</ul>
 					</div>
 				</div>
 			</div>
 
+			{status == 'authenticated' && (
+				<div className="flex flex-col mt-auto p-4">
+					<Button
+						onClick={handleLogout}
+						className="text-white p-2 text-base font-semibold rounded cursor-pointer flex gap-2 items-center"
+						variant="ghost"
+					>
+						<LogOut />
+						Log Out
+					</Button>
+				</div>
+			)}
 			<div className="flex flex-col mt-auto p-4">
 				<Button
 					onClick={handleLogout}

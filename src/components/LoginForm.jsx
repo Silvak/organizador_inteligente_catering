@@ -120,7 +120,7 @@ function LoginForm() {
 					)}
 				/>
 				<Button
-					className="bg-[#F86260] w-full rounded-md shadow-lg"
+					className="bg-[#F86260] hover:bg-red-500 w-full rounded-md shadow-lg"
 					type="submit"
 				>
 					{status == 'pending' ? (
