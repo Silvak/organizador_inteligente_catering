@@ -25,6 +25,7 @@ import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { CalendarIcon, Mail, MapPin, Phone, User } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -41,6 +42,8 @@ const summarySchema = z.object({
 });
 
 export default function Summary() {
+	const { data: session, status: sessionStatus } = useSession();
+
 	const form = useForm({
 		resolver: zodResolver(summarySchema),
 		defaultValues: {
@@ -62,6 +65,7 @@ export default function Summary() {
 
 	const dishes = useCartStore((state) => state.dishes);
 	const menus = useCartStore((state) => state.menus);
+	const enterprise = useCartStore((state) => state.enterprise);
 	const totalDishes = dishes.reduce((acc, dish) => acc + dish.price, 0);
 	const totalMenus = menus.reduce(
 		(acc, menu) => acc + menu.dishes.reduce((a, dish) => a + dish.price, 0),
@@ -69,13 +73,31 @@ export default function Summary() {
 	);
 
 	function onSubmit(data) {
-		console.log(data);
-		mutate(data, {
-			onSuccess: (data) => {
-				setOrder(data?.data);
-				setOpen(true);
+		mutate(
+			{
+				dishes: dishes.map((dish) => dish._id),
+				menuDishes: menus.map((menu) => menu._id),
+				person: session?.user?.user.person[0],
+				menuDishCount: menus.length > 0 ? data.people : 0,
+				dishCount: dishes.length > 0 ? data.people : 0,
+				emitDate: new Date().toISOString(),
+				deliverDate: data.shippingDate.toISOString(),
+				address: data.address,
+				enterprise,
+				orderStatus: 'PAGADO',
+				totalCost: totalDishes + totalMenus,
+				observations: 'observaciones',
 			},
-		});
+			{
+				onSuccess: (data) => {
+					setOrder(data?.data);
+					setOpen(true);
+				},
+				onError: (error) => {
+					console.log(error);
+				},
+			}
+		);
 	}
 
 	return (
@@ -264,7 +286,7 @@ export default function Summary() {
 										key={dish.id}
 										className="flex items-center justify-between"
 									>
-										<p>{dish.name}</p>
+										<p>{dish.title}</p>
 										<p>${dish.price}</p>
 									</div>
 								))}

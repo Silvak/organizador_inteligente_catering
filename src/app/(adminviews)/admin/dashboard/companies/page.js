@@ -1,6 +1,5 @@
-import AdminCompanyTable from '@/components/AdminCompanyTable';
+import AdminCompanyData from '@/components/AdminCompanyData';
 import CreateCompanyDialog from '@/components/CreateCompanyDialog';
-import { Button } from '@/components/ui/button';
 
 export default function Page() {
 	return (
@@ -11,7 +10,7 @@ export default function Page() {
 			</div>
 
 			<div>
-				<AdminCompanyTable />
+				<AdminCompanyData />
 			</div>
 		</div>
 	);

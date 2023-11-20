@@ -1,7 +1,5 @@
 'use client';
 
-import * as z from 'zod';
-import { useForm } from 'react-hook-form';
 import { Button } from './ui/button';
 import {
 	Dialog,
@@ -9,85 +7,19 @@ import {
 	DialogHeader,
 	DialogTrigger,
 } from './ui/dialog';
-import { Form } from './ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Loader2, Pencil } from 'lucide-react';
-import { getImgSrc } from '@/lib/utils';
-import { useToast } from './ui/use-toast';
-import UploadImageOnModal from './UploadImageOnModal';
-import { uploadDishImage } from '@/services/dish.services';
-import { editCompany, getUser } from '@/services/user.services';
-import CompanyRegisterForm from './CompanyRegisterForm';
-
-const editCompanySchema = z.object({
-	name: z.string().min(2, 'Name must contain at least 2 characters'),
-	email: z.string().email(),
-	phone: z.string({ required_error: 'Phone number is required' }),
-	image: z.any(),
-});
-
-const company = {
-	_id: '60b8f2c7b1d4c80015b7f7a0',
-	name: 'Empresa 1',
-};
+import { Pencil } from 'lucide-react';
+import { getEnterprise } from '@/services/user.services';
+import CompanyEditForm from './CompanyEditForm';
 
 export default function EditCompanyDialog({ id }) {
 	const { data, status: companyStatus } = useQuery({
 		queryKey: ['company', id],
-		queryFn: getUser(id),
+		queryFn: getEnterprise(id),
 	});
+
 	const [isOpen, setIsOpen] = useState(false);
-	const form = useForm({
-		resolver: zodResolver(editCompanySchema),
-		defaultValues: {},
-	});
-	const { toast } = useToast();
-
-	const queryClient = useQueryClient();
-
-	const { mutate, status } = useMutation({
-		mutationFn: editCompany(company._id),
-		onSuccess: () => {
-			queryClient.invalidateQueries('companies');
-			setIsOpen(false);
-		},
-	});
-
-	function onSubmit(companyData) {
-		mutate(
-			{ ...companyData, image: undefined },
-			{
-				onSuccess: async () => {
-					try {
-						if (companyData?.image) {
-							const formData = new FormData();
-							formData.append(
-								'image',
-								companyData.image,
-								companyData.image.name
-							);
-							await uploadDishImage(dish._id, formData);
-						}
-						toast({ title: 'empresa editada' });
-						form.reset();
-						setIsOpen(false);
-					} catch (error) {
-						toast({
-							title: 'Error editando imagen de empresa',
-							variant: 'destructive',
-						});
-						console.log(error);
-					}
-				},
-				onError: (error) => {
-					toast({ title: 'Error editando empresa', variant: 'destructive' });
-					console.log(error);
-				},
-			}
-		);
-	}
 
 	return (
 		<Dialog
@@ -108,38 +40,9 @@ export default function EditCompanyDialog({ id }) {
 					</h2>
 				</DialogHeader>
 
-				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="flex flex-col gap-2 justify-center"
-					>
-						<UploadImageOnModal
-							form={form}
-							currentImage={
-								company.img != 'no-posee-imagen'
-									? getImgSrc('company', company.img)
-									: undefined
-							}
-						/>
-
-						<CompanyRegisterForm form={form} />
-
-						<Button
-							type="submit"
-							className="w-full bg-[#F86260] rounded-xl"
-							disabled={status == 'pending'}
-						>
-							{status == 'pending' ? (
-								<>
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Espera por favor
-								</>
-							) : (
-								'Editar'
-							)}
-						</Button>
-					</form>
-				</Form>
+				{companyStatus == 'success' && (
+					<CompanyEditForm company={data?.data} setIsOpen={setIsOpen} />
+				)}
 			</DialogContent>
 		</Dialog>
 	);

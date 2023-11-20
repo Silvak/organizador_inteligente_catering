@@ -13,7 +13,7 @@ export default function MenuForm({ form }) {
 		<>
 			<FormField
 				control={form.control}
-				name="name"
+				name="title"
 				render={({ field }) => (
 					<FormItem>
 						<FormLabel className="font-semibold">Nombre</FormLabel>

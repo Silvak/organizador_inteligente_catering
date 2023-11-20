@@ -1,27 +1,31 @@
 'use client';
 
 import CompanyCard from '@/components/CompanyCard';
-import DishesSection from '@/components/DishesSection';
-import MenusSection from '@/components/MenusSection';
-import { getUser } from '@/services/user.services';
+import CompanyDishes from '@/components/CompanyDishes';
+import CompanyMenus from '@/components/CompanyMenus';
+import ProductsSkeletons from '@/components/ProductsSkeletons';
+import { getEnterprise, getUser } from '@/services/user.services';
 import { useQuery } from '@tanstack/react-query';
 
 export default function Page({ params }) {
 	const { id } = params;
 	const { data, status } = useQuery({
 		queryKey: ['company', id],
-		queryFn: getUser(id),
+		queryFn: getEnterprise(id),
+		select: (data) => data?.data,
 	});
 
-	return (
+	return status == 'pending' ? (
+		<ProductsSkeletons />
+	) : (
 		<div>
 			<div>
-				<CompanyCard company={data?.data} />
+				<CompanyCard company={data} />
 			</div>
 
-			<div>
-				<DishesSection limit={6} search={data?.data.name} />
-				<MenusSection limit={6} search={data?.data.name} />
+			<div className="space-y-8">
+				<CompanyDishes companyDishes={data?.dishes} status={status} />
+				<CompanyMenus companyMenus={data?.menuDish} status={status} />
 			</div>
 		</div>
 	);

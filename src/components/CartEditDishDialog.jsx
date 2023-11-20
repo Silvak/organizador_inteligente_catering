@@ -12,6 +12,7 @@ import { useState } from 'react';
 import SelectDishIngredients from './SelectDishIngredients';
 import { useQuery } from '@tanstack/react-query';
 import { getDish } from '@/services/dish.services';
+import { getImgSrc } from '@/lib/utils';
 
 const FormSchema = z.object({
 	ingredients: z
@@ -25,8 +26,9 @@ export default function CartEditDishDialog({ dish }) {
 	const [open, setOpen] = useState(false);
 	const editDish = useCartStore((state) => state.editDish);
 	const { data, status } = useQuery({
-		queryKey: ['dish', dish.id],
-		queryFn: () => getDish(dish.id),
+		queryKey: ['dish', dish._id],
+		queryFn: () => getDish(dish._id),
+		select: (data) => data?.data,
 	});
 
 	const form = useForm({
@@ -57,17 +59,17 @@ export default function CartEditDishDialog({ dish }) {
 				<div className="flex gap-20 items-center justify-center">
 					<div className="flex flex-col gap-8">
 						<div>
-							<h1 className="text-2xl font-bold">{dish.name}</h1>
+							<h1 className="text-2xl font-bold">{dish.title}</h1>
 							<p>{dish.description}</p>
 						</div>
 
-						<SelectDishIngredients dish={dish} form={form} />
+						<SelectDishIngredients dish={data} form={form} />
 					</div>
 
 					<div className="">
 						<Image
-							src={dish.image}
-							alt={dish.name}
+							src={getImgSrc('dish', dish.img)}
+							alt={dish.title}
 							width={500}
 							height={500}
 							className="rounded-2xl"
@@ -76,7 +78,7 @@ export default function CartEditDishDialog({ dish }) {
 				</div>
 
 				<Button
-					className="bg-[#F86260] rounded-md shadow-lg"
+					className="bg-[#F86260] hover:bg-red-500 rounded-md shadow-lg"
 					onClick={handleAddToCart}
 				>
 					Editar

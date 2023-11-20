@@ -14,7 +14,7 @@ import {
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { useMutation } from '@tanstack/react-query';
-import { signUp } from '@/services/user.services';
+import { createPerson, signUp } from '@/services/user.services';
 import { useRouter } from 'next/navigation';
 import { Checkbox } from './ui/checkbox';
 import { useToast } from './ui/use-toast';
@@ -22,11 +22,9 @@ import { Loader2, LockKeyhole, Mail, Phone, User } from 'lucide-react';
 
 const registerSchema = z
 	.object({
-		displayName: z
-			.string()
-			.min(2, 'displayName must contain at least 2 characters'),
+		name: z.string().min(2, 'displayName must contain at least 2 characters'),
 		email: z.string().email(),
-		phone: z.string({ required_error: 'Phone number is required' }),
+		cellphone: z.string({ required_error: 'Phone number is required' }),
 		password: z
 			.string()
 			.min(8, 'Password must contain at least 8 characters')
@@ -52,17 +50,17 @@ export default function RegisterForm() {
 	const form = useForm({
 		resolver: zodResolver(registerSchema),
 		defaultValues: {
-			displayName: '',
+			name: '',
 			email: '',
 			password: '',
 			passwordConfirm: '',
 			termsAndConditions: false,
-			phone: '',
+			cellphone: '',
 		},
 	});
 
 	const { mutate, status } = useMutation({
-		mutationFn: signUp,
+		mutationFn: createPerson,
 	});
 
 	const router = useRouter();
@@ -71,16 +69,28 @@ export default function RegisterForm() {
 	function onSubmit(userData) {
 		mutate(
 			{
-				...userData,
-				passwordConfirm: undefined,
-				termsAndConditions: undefined,
+				name: userData.name,
+				cellphone: userData.cellphone,
+				allergies: [],
 				rol: 'USER_ROLE',
 			},
 			{
-				onSuccess: () => {
+				onSuccess: async (data) => {
 					// handle success
-					toast({ title: 'Usuario creado' });
-					router.push('/login');
+
+					try {
+						await signUp({
+							person: data.data._id,
+							rol: 'USER_ROLE',
+							email: userData.email,
+							password: userData.password,
+						});
+						toast({ title: 'Usuario creado' });
+						router.push('/login');
+					} catch (e) {
+						toast({ title: 'Error creando usuario', variant: 'destructive' });
+						console.log(e);
+					}
 				},
 				onError: (e) => {
 					//handle error
@@ -96,16 +106,16 @@ export default function RegisterForm() {
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<FormField
 					control={form.control}
-					name="displayName"
+					name="name"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel className="font-semibold text-gray-600 text-base">
-								Nombre de usuario
+								Nombre
 							</FormLabel>
 							<FormControl>
 								<div className="flex items-center">
 									<Input
-										placeholder="Establezca su nombre de usuario"
+										placeholder="Establezca su nombre"
 										type="text"
 										className="bg-white dark:bg-blue-200/10 border-x-0 border-t-0 border-b-1 border-gray-300 rounded-none focus-visible:ring-0 focus-visible:border-b-2 pl-8"
 										{...field}
@@ -146,7 +156,7 @@ export default function RegisterForm() {
 
 				<FormField
 					control={form.control}
-					name="phone"
+					name="cellphone"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel className="font-semibold text-gray-600 text-base">

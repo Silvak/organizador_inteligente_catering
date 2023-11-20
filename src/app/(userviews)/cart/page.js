@@ -1,14 +1,6 @@
 'use client';
 
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-} from '@/components/ui/card';
 import { useCartStore } from '../../cartStore';
-import { Eye, Trash } from 'lucide-react';
-import CartEditDishDialog from '@/components/CartEditDishDialog';
 import CartDishCard from '@/components/CartDihsCard';
 import CartMenuCard from '@/components/CartMenuCard';
 import { Button } from '@/components/ui/button';
@@ -38,7 +30,7 @@ export default function Cart() {
 							</h2>
 							<div className="space-y-4">
 								{dishes.map((dish) => (
-									<CartDishCard key={dish.id} dish={dish} />
+									<CartDishCard key={dish._id} dish={dish} />
 								))}
 							</div>
 						</section>
@@ -50,7 +42,7 @@ export default function Cart() {
 
 							<div>
 								{menus.map((menu) => (
-									<CartMenuCard key={menu.id} menu={menu} />
+									<CartMenuCard key={menu._id} menu={menu} />
 								))}
 							</div>
 						</section>
@@ -59,7 +51,10 @@ export default function Cart() {
 			)}
 
 			<div className="flex justify-end">
-				<Button className="bg-red-500" onClick={() => router.push('/summary')}>
+				<Button
+					className="bg-red-500 hover:bg-red-500"
+					onClick={() => router.push('/summary')}
+				>
 					Hacer oferta
 				</Button>
 			</div>

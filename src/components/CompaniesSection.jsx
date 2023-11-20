@@ -7,13 +7,6 @@ import MenuCard from './MenuCard';
 import { getCompanies } from '@/services/user.services';
 import CompanyCard from './CompanyCard';
 
-const companyExample = {
-	_id: '1',
-	name: 'Yummy',
-	image: '/images/yummy.png',
-	description: 'description',
-};
-
 export default function CompaniesSection() {
 	const limit = 6;
 
@@ -35,10 +28,9 @@ export default function CompaniesSection() {
 				) : (
 					<>
 						{companiesStatus == 'success' &&
-							companiesData?.companies?.map((company) => (
+							companiesData?.enterprises?.map((company) => (
 								<CompanyCard key={company._id} company={company} />
 							))}
-						<CompanyCard company={companyExample} />
 					</>
 				)}
 			</div>

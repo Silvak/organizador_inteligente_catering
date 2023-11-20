@@ -13,15 +13,16 @@ import { Form } from './ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Eye, Loader2, Pencil } from 'lucide-react';
+import { Eye, Loader2, Pencil, X } from 'lucide-react';
 import { getImgSrc } from '@/lib/utils';
 import { useToast } from './ui/use-toast';
 import UploadImageOnModal from './UploadImageOnModal';
 import { editMenu, uploadMenuImage } from '@/services/dish.services';
 import MenuForm from './MenuForm';
+import SelectMenuDishes from './SelectMenuDishes';
 
 const editMenuSchema = z.object({
-	name: z.string().min(2, 'Name must contain at least 2 characters'),
+	title: z.string().min(2, 'Name must contain at least 2 characters'),
 	description: z
 		.string()
 		.min(2, 'Description must contain at least 2 characters'),
@@ -33,12 +34,13 @@ export default function EditMenuDialog({ menu }) {
 	const form = useForm({
 		resolver: zodResolver(editMenuSchema),
 		defaultValues: {
-			name: menu.name,
+			title: menu.title,
 			description: menu.description,
 			price: menu.price,
 		},
 	});
 	const { toast } = useToast();
+	const [selectedDishes, setSelectedDishes] = useState([...menu.dishes]);
 
 	const queryClient = useQueryClient();
 
@@ -108,16 +110,43 @@ export default function EditMenuDialog({ menu }) {
 							form={form}
 							currentImage={
 								menu.img != 'no-posee-imagen'
-									? getImgSrc('menu', menu.img)
+									? getImgSrc('menuDish', menu.img)
 									: undefined
 							}
 						/>
 
 						<MenuForm form={form} />
 
+						<section className="space-y-2">
+							<p className="text-sm font-semibold">Platos</p>
+							<div className="flex gap-2 flex-wrap my-2">
+								{selectedDishes.map((dish) => (
+									<div
+										className="flex bg-gray-300 rounded-3xl gap-1 py-1 px-2"
+										key={dish._id}
+									>
+										<p className="text-xs">{dish.title}</p>
+										<X
+											className="h-4 w-4 cursor-pointer"
+											onClick={() =>
+												setSelectedDishes((prev) => {
+													return prev.filter((d) => d._id != dish._id);
+												})
+											}
+										/>
+									</div>
+								))}
+							</div>
+
+							<SelectMenuDishes
+								selectedDishes={selectedDishes}
+								setSelectedDishes={setSelectedDishes}
+							/>
+						</section>
+
 						<Button
 							type="submit"
-							className="w-full bg-[#F86260] rounded-xl"
+							className="w-full bg-[#F86260] hover:bg-red-500 rounded-xl"
 							disabled={status == 'pending'}
 						>
 							{status == 'pending' ? (

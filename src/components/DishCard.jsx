@@ -14,6 +14,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/app/cartStore';
 import { useToast } from './ui/use-toast';
 import { Button } from './ui/button';
+import { getImgSrc } from '@/lib/utils';
 
 export default function DishCard({ dish }) {
 	const [open, setOpen] = useState(false);
@@ -35,19 +36,19 @@ export default function DishCard({ dish }) {
 
 			<CardHeader className="cursor-pointer" onClick={handleOpen}>
 				<Image
-					src={dish.image}
-					alt={dish.name}
+					src={getImgSrc('dish', dish.img)}
+					alt={dish.title}
 					width={300}
 					height={300}
-					className="rounded-2xl border"
+					className="rounded-2xl border h-[200px] overflow-hidden"
 				/>
 			</CardHeader>
 			<CardContent
 				className="text-center space-y-2 text-gray-700 cursor-pointer"
 				onClick={handleOpen}
 			>
-				<p>{dish.company}</p>
-				<CardTitle>{dish.name}</CardTitle>
+				<CardTitle>{dish.title}</CardTitle>
+				<p>{dish.description}</p>
 			</CardContent>
 
 			<CardFooter className="flex justify-between items-center">

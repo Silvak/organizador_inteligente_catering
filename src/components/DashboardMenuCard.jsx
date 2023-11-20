@@ -7,7 +7,7 @@ export default function DashboardMenuCard({ menu }) {
 		<Card className="rounded-3xl shadow-xl p-2">
 			<CardHeader className="p-2 pb-1">
 				<div className="flex justify-between items-center">
-					<h2 className="text-lg font-semibold text-gray-700">{menu.name}</h2>
+					<h2 className="text-lg font-semibold text-gray-700">{menu.title}</h2>
 
 					<div className="flex gap-2 items-center">
 						<EditMenuDialog menu={menu} />
