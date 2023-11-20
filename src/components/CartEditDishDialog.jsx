@@ -34,7 +34,7 @@ export default function CartEditDishDialog({ dish }) {
 	const form = useForm({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			ingredients: [...dish.ingredients],
+			ingredients: dish.ingredients.map((ingredient) => ingredient._id),
 		},
 	});
 
