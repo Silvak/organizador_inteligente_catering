@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SelectDishIngredients from '@/components/SelectDishIngredients';
+import { getImgSrc } from '@/lib/utils';
 
 const FormSchema = z.object({
 	ingredients: z
@@ -22,10 +23,11 @@ export default function DishPreferences() {
 	const router = useRouter();
 	const dish = usePreferencesStore((state) => state.dish);
 	const addDish = useCartStore((state) => state.addDish);
+
 	const form = useForm({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			ingredients: [...dish.ingredients],
+			ingredients: dish.ingredients.map((ingredient) => ingredient._id),
 		},
 	});
 
@@ -40,7 +42,7 @@ export default function DishPreferences() {
 			<div className="flex gap-20 items-center justify-center">
 				<div className="flex flex-col gap-8">
 					<div>
-						<h1 className="text-2xl font-bold">{dish.name}</h1>
+						<h1 className="text-2xl font-bold">{dish.title}</h1>
 						<p>{dish.description}</p>
 					</div>
 
@@ -49,8 +51,8 @@ export default function DishPreferences() {
 
 				<div className="">
 					<Image
-						src={dish.image}
-						alt={dish.name}
+						src={getImgSrc('dish', dish.img)}
+						alt={dish.title}
 						width={500}
 						height={500}
 						className="rounded-2xl"
@@ -61,7 +63,7 @@ export default function DishPreferences() {
 			<div className="flex flex-col space-y-2 items-end mt-10">
 				<p className="text-red-500 font-bold">${dish.price}</p>
 				<Button
-					className="bg-[#F86260] rounded-md shadow-lg"
+					className="bg-[#F86260] hover:bg-red-500 rounded-md shadow-lg"
 					onClick={handleAddToCart}
 				>
 					Agregar al carrito

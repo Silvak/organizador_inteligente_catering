@@ -11,17 +11,20 @@ import {
 } from './ui/dialog';
 import { Form } from './ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import UploadImageOnModal from './UploadImageOnModal';
 import { useToast } from './ui/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import DishForm from './DishForm';
 import { createDish, uploadDishImage } from '@/services/dish.services';
+import DashboardSelectDishIngredients from './DashboardSelectDishIngredients';
+import { useSession } from 'next-auth/react';
+import { getEnterprise } from '@/services/user.services';
 
 const createDishSchema = z
 	.object({
-		name: z.string().min(2, 'Name must contain at least 2 characters'),
+		title: z.string().min(2, 'Name must contain at least 2 characters'),
 		description: z
 			.string()
 			.min(2, 'Description must contain at least 2 characters'),
@@ -34,16 +37,25 @@ const createDishSchema = z
 	});
 
 export default function CreateDishDialog() {
+	const { data: session, status: sessionStatus } = useSession();
+	const { data: companyData, status: companyStatus } = useQuery({
+		queryKey: ['company', session?.user?.user.enterprise[0]],
+		queryFn: getEnterprise(session?.user?.user.enterprise[0]),
+		enabled: !!session?.user?.user.enterprise[0],
+		select: (data) => data?.data,
+	});
+
 	const [isOpen, setIsOpen] = useState(false);
 	const form = useForm({
 		resolver: zodResolver(createDishSchema),
 		defaultValues: {
-			name: '',
+			title: '',
 			description: '',
 			price: '',
 		},
 	});
 	const { toast } = useToast();
+	const [selectedIngredients, setSelectedIngredients] = useState([]);
 
 	const queryClient = useQueryClient();
 
@@ -57,9 +69,11 @@ export default function CreateDishDialog() {
 	function onSubmit(dishData) {
 		mutate(
 			{
-				name: dishData.name,
+				title: dishData.title,
 				description: dishData.description,
 				price: dishData.price,
+				ingredients: selectedIngredients.map((i) => i._id),
+				enterpriseId: companyData._id,
 			},
 			{
 				onSuccess: async (data) => {
@@ -74,6 +88,10 @@ export default function CreateDishDialog() {
 						});
 						console.log(e);
 					}
+
+					form.reset();
+					setIsOpen(false);
+					toast({ title: 'Plato agregado' });
 				},
 				onError: (error) => {
 					toast({
@@ -94,7 +112,7 @@ export default function CreateDishDialog() {
 			}
 		>
 			<DialogTrigger asChild>
-				<Button className="bg-[#F86260]">Agregar Plato</Button>
+				<Button className="bg-[#F86260] hover:bg-red-500">Agregar Plato</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader className="mb-2">
@@ -112,9 +130,36 @@ export default function CreateDishDialog() {
 
 						<DishForm form={form} />
 
+						<section className="space-y-2">
+							<p className="text-sm font-semibold">Ingredientes</p>
+							<div className="flex gap-2 flex-wrap my-2">
+								{selectedIngredients.map((ingredient) => (
+									<div
+										className="flex bg-gray-300 rounded-3xl gap-1 py-1 px-2"
+										key={ingredient._id}
+									>
+										<p className="text-xs">{ingredient.title}</p>
+										<X
+											className="h-4 w-4 cursor-pointer"
+											onClick={() =>
+												setSelectedIngredients((prev) => {
+													return prev.filter((i) => i._id != ingredient._id);
+												})
+											}
+										/>
+									</div>
+								))}
+							</div>
+
+							<DashboardSelectDishIngredients
+								selectedIngredients={selectedIngredients}
+								setSelectedIngredients={setSelectedIngredients}
+							/>
+						</section>
+
 						<Button
 							type="submit"
-							className="w-full bg-[#F86260]"
+							className="w-full bg-[#F86260] hover:bg-red-500"
 							disabled={status == 'pending'}
 						>
 							{status == 'pending' ? (

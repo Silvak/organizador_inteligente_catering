@@ -1,4 +1,5 @@
 'use client';
+import { getImgSrc } from '@/lib/utils';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -10,14 +11,13 @@ export default function CompanyCard({ company }) {
 			onClick={() => router.push(`/company/${company._id}`)}
 		>
 			<Image
-				src={company.image}
-				alt={company.name}
+				src={getImgSrc('enterprise', company.img)}
+				alt={company.title}
 				width={100}
 				height={100}
 				className="rounded-full border"
 			/>
-			<h1 className="text-xl font-semibold">{company.name}</h1>
-			<p className="text-gray-600">{company.description}</p>
+			<h1 className="text-xl font-semibold text-center">{company.title}</h1>
 		</article>
 	);
 }

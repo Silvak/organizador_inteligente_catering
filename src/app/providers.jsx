@@ -1,14 +1,32 @@
 'use client';
 
+import { isExpired } from '@/lib/utils';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import { SessionProvider } from 'next-auth/react';
+import { SessionProvider, signOut, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 
 const queryClient = new QueryClient();
+
+function SignOutOnExpiredToken({ children }) {
+	const { data: session, status } = useSession();
+
+	useEffect(() => {
+		if (status == 'authenticated' && isExpired(session?.user?.accessExp)) {
+			signOut();
+		}
+	}, [session, status]);
+
+	return children;
+}
 
 function Providers({ children }) {
 	return (
 		<SessionProvider>
-			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+			<SignOutOnExpiredToken>
+				<QueryClientProvider client={queryClient}>
+					{children}
+				</QueryClientProvider>
+			</SignOutOnExpiredToken>
 		</SessionProvider>
 	);
 }

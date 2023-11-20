@@ -18,35 +18,33 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from './ui/form';
 import UploadImageOnModal from './UploadImageOnModal';
 import { Loader2 } from 'lucide-react';
-import { signUp } from '@/services/user.services';
-import { useMutation } from '@tanstack/react-query';
+import {
+	createEnterprise,
+	signUp,
+	uploadCompanyImage,
+} from '@/services/user.services';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const registerSchema = z
 	.object({
-		name: z.string().min(2, 'Name must contain at least 2 characters'),
+		title: z.string().min(2, 'Name must contain at least 2 characters'),
 		email: z.string().email(),
-		phone: z.string({ required_error: 'Phone number is required' }),
+		address: z.string(),
 		password: z
 			.string()
 			.min(8, 'Password must contain at least 8 characters')
 			.max(32),
+		passwordConfirm: z.string(),
 		image: z.any(),
-
-		// passwordConfirm: z.string(),
-		// termsAndConditions: z.boolean(),
+	})
+	.refine((data) => data.password === data.passwordConfirm, {
+		path: ['passwordConfirm'],
+		message: 'Passwords must match',
 	})
 	.refine((data) => !!data.image, {
 		path: ['image'],
 		message: 'You need to provide an image',
 	});
-// .refine((data) => data.password === data.passwordConfirm, {
-// 	path: ['passwordConfirm'],
-// 	message: 'Passwords must match',
-// })
-// .refine((data) => data.termsAndConditions === true, {
-// 	path: ['termsAndConditions'],
-// 	message: 'You need to accept terms and conditions',
-// });
 
 export default function CreateCompanyDialog() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -54,36 +52,48 @@ export default function CreateCompanyDialog() {
 	const form = useForm({
 		resolver: zodResolver(registerSchema),
 		defaultValues: {
-			name: '',
+			title: '',
 			email: '',
 			password: '',
 			address: '',
-			// passwordConfirm: '',
-			// termsAndConditions: false,
-			phone: '',
+			passwordConfirm: '',
 		},
 	});
 
 	const { mutate, status } = useMutation({
-		mutationFn: signUp,
+		mutationFn: createEnterprise,
 	});
+
+	const queryClient = useQueryClient();
 
 	const { toast } = useToast();
 
 	function onSubmit(companyData) {
 		mutate(
 			{
-				...companyData,
-				// passwordConfirm: undefined,
-				// termsAndConditions: undefined,
-				rol: 'COMPANY_ROLE',
+				title: companyData.title,
+				address: companyData.address,
+				rol: 'ENTERPRISE_ROLE',
+				dishes: [],
 			},
 			{
 				onSuccess: async (data) => {
 					try {
+						await signUp({
+							enterprise: data.data._id,
+							rol: 'ENTERPRISE_ROLE',
+							email: companyData.email,
+							password: companyData.password,
+						});
+					} catch (e) {
+						toast({ title: 'Error creando empresa', variant: 'destructive' });
+						console.log(e);
+					}
+
+					try {
 						const formData = new FormData();
 						formData.append('image', companyData.image, companyData.image.name);
-						await uploadDishImage(data.data._id, formData);
+						await uploadCompanyImage(data.data._id, formData);
 					} catch (e) {
 						toast({
 							title: 'Error al agregar la imagen de la empresa',
@@ -91,6 +101,10 @@ export default function CreateCompanyDialog() {
 						});
 						console.log(e);
 					}
+					queryClient.invalidateQueries(['enterprises']);
+					form.reset();
+					setIsOpen(false);
+					toast({ title: 'Empresa creada' });
 				},
 				onError: (e) => {
 					//handle error
@@ -109,7 +123,9 @@ export default function CreateCompanyDialog() {
 			}
 		>
 			<DialogTrigger asChild>
-				<Button className="bg-[#F86260]">Agregar Empresa</Button>
+				<Button className="bg-[#F86260] hover:bg-red-500">
+					Agregar Empresa
+				</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader className="mb-2">

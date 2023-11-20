@@ -3,9 +3,9 @@
 import { useQuery } from '@tanstack/react-query';
 import ProductsSkeletons from './ProductsSkeletons';
 import DishCard from './DishCard';
-import { Pagination } from '@tanstack/react-table';
 import { getDishes } from '@/services/dish.services';
 import { useState } from 'react';
+import Pagination from './Pagination';
 
 const dishExample = {
 	id: '1',
@@ -27,7 +27,7 @@ export default function DishesSection({ search, limit }) {
 		queryFn: () =>
 			getDishes({
 				limit,
-				term: debouncedSearch,
+				term: search,
 				offset: pageNumber,
 			}),
 	});
@@ -35,7 +35,7 @@ export default function DishesSection({ search, limit }) {
 	return (
 		<section>
 			<h1 className="text-gray-700 text-2xl font-bold">Platos</h1>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 mb-8">
 				{dishesStatus == 'pending' ? (
 					<ProductsSkeletons />
 				) : (
@@ -44,7 +44,6 @@ export default function DishesSection({ search, limit }) {
 							dishesData?.dishes?.map((dish) => (
 								<DishCard key={dish._id} dish={dish} />
 							))}
-						<DishCard dish={dishExample} />
 					</>
 				)}
 			</div>

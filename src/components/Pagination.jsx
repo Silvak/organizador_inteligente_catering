@@ -33,14 +33,14 @@ const Pagination = (props) => {
 	let lastPage = paginationRange[paginationRange?.length - 1];
 
 	return (
-		<ul className="flex list-none items-center justify-between w-fit gap-2 m-auto bg-white dark:bg-[#020817]  shadow-md rounded-md px-2 py-2 border border-gray-200 dark:border-gray-200/20">
+		<ul className="flex list-none items-center justify-between w-fit gap-2 m-auto bg-white dark:bg-[#020817]  rounded-md px-2 py-2 border-none">
 			{/* Left navigation arrow */}
 			<li
 				onClick={onPrevious}
 				className={`flex justify-center items-center h-[40px] w-[40px] ${
 					currentPage === 1
 						? 'hover:bg-transparent hover:cursor-default'
-						: 'flex justify-center items-center h-[40px] w-[40px] text-black rounded-md text-xs hover:cursor-pointer hover:bg-[#7E8EFF]/50'
+						: 'flex justify-center items-center h-[40px] w-[40px] text-black rounded-md text-xs hover:cursor-pointer hover:bg-gray-200'
 				}`}
 			>
 				<ChevronLeft
@@ -68,9 +68,7 @@ const Pagination = (props) => {
 					<li
 						onClick={() => onPageChange(Number(pageNumber))}
 						className={`flex justify-center items-center h-[40px] w-[40px]  text-black dark:text-white rounded-md text-sm hover:cursor-pointer  ${
-							pageNumber === currentPage
-								? 'bg-[#7E8EFF]/50 '
-								: 'hover:bg-[#7E8EFF]/50'
+							pageNumber === currentPage ? 'bg-gray-300 ' : 'hover:bg-gray-200'
 						}`}
 						key={pageNumber}
 					>
@@ -85,7 +83,7 @@ const Pagination = (props) => {
 				className={`flex justify-center items-center h-[40px] w-[40px] ${
 					currentPage === lastPage
 						? ' hover:bg-transparent hover:cursor-default'
-						: 'flex justify-center items-center h-[40px] w-[40px] text-center mx-auto text-black rounded-md text-xs hover:cursor-pointer hover:bg-[#7E8EFF]/50'
+						: 'flex justify-center items-center h-[40px] w-[40px] text-center mx-auto text-black rounded-md text-xs hover:cursor-pointer hover:bg-gray-200'
 				}`}
 			>
 				<ChevronRight

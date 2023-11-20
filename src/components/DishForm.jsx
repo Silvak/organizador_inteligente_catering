@@ -13,7 +13,7 @@ export default function DishForm({ form }) {
 		<>
 			<FormField
 				control={form.control}
-				name="name"
+				name="title"
 				render={({ field }) => (
 					<FormItem>
 						<FormLabel className="font-semibold">Nombre</FormLabel>
@@ -21,7 +21,7 @@ export default function DishForm({ form }) {
 							<Input
 								type="text"
 								className="border-none focus-visible:ring-1 rounded-xl h-fit p-2"
-								placeholder="Name"
+								placeholder="Nombre"
 								{...field}
 							/>
 						</FormControl>

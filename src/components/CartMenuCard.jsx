@@ -7,12 +7,12 @@ export default function CartMenuCard({ menu }) {
 		<Card className="rounded-3xl shadow-xl">
 			<CardHeader className="pb-2">
 				<div className="flex justify-between items-center">
-					<h2 className="text-lg font-semibold text-gray-700">{menu.name}</h2>
+					<h2 className="text-lg font-semibold text-gray-700">{menu.title}</h2>
 
 					<div className="flex gap-2 items-center">
 						<CartEditMenuDialog menu={menu} />
 
-						<CartDeleteMenuDialog id={menu.id} />
+						<CartDeleteMenuDialog id={menu._id} />
 					</div>
 				</div>
 			</CardHeader>

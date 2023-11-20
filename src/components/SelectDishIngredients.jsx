@@ -24,32 +24,35 @@ export default function SelectDishIngredients({ dish, form }) {
 							</div>
 							{dish.ingredients.map((ingredient) => (
 								<FormField
-									key={ingredient}
+									key={ingredient._id}
 									control={form.control}
 									name="ingredients"
 									render={({ field }) => {
 										return (
 											<FormItem
-												key={ingredient}
+												key={ingredient._id}
 												className="flex flex-row items-start space-x-3 space-y-0"
 											>
 												<FormControl>
 													<Checkbox
 														className="data-[state=checked]:bg-red-500 rounded-full"
-														checked={field.value?.includes(ingredient)}
+														checked={field.value?.includes(ingredient._id)}
 														onCheckedChange={(checked) => {
 															return checked
-																? field.onChange([...field.value, ingredient])
+																? field.onChange([
+																		...field.value,
+																		ingredient._id,
+																  ])
 																: field.onChange(
 																		field.value?.filter(
-																			(value) => value !== ingredient
+																			(value) => value !== ingredient._id
 																		)
 																  );
 														}}
 													/>
 												</FormControl>
 												<FormLabel className="font-normal">
-													{ingredient}
+													{ingredient.title}
 												</FormLabel>
 											</FormItem>
 										);

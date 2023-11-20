@@ -12,6 +12,7 @@ import { useCartStore } from '@/app/cartStore';
 import { usePreferencesStore } from '@/app/preferencesStore';
 import { useRouter } from 'next/navigation';
 import { useToast } from './ui/use-toast';
+import { getImgSrc } from '@/lib/utils';
 
 export default function MenuDialog({ menu, open, setOpen }) {
 	const addMenu = useCartStore((state) => state.addMenu);
@@ -36,14 +37,14 @@ export default function MenuDialog({ menu, open, setOpen }) {
 			<DialogContent className="sm:rounded-3xl space-y-2">
 				<div className="flex gap-4">
 					<Image
-						src={menu.image}
-						alt={menu.name}
+						src={getImgSrc('menuDish', menu.img)}
+						alt={menu.title}
 						width={300}
 						height={300}
 						className="rounded-2xl border w-1/2"
 					/>
 					<div className="w-1/2 space-y-2 text-gray-700">
-						<h1 className="text-lg font-semibold">{menu.name}</h1>
+						<h1 className="text-lg font-semibold">{menu.title}</h1>
 						<p>{menu.description}</p>
 					</div>
 				</div>
@@ -54,22 +55,24 @@ export default function MenuDialog({ menu, open, setOpen }) {
 						<Accordion type="single" collapsible className="space-y-2">
 							{menu.dishes.map((dish) => (
 								<AccordionItem
-									value={dish.name}
-									key={dish.name}
-									className=" shadow-lg"
+									value={dish.title}
+									key={dish._id}
+									className=" shadow-lg px-2 rounded-lg"
 								>
 									<AccordionTrigger className="hover:no-underline">
 										<div>
 											<div className="flex gap-4">
 												<Image
-													src={dish.image}
-													alt={dish.name}
+													src={getImgSrc('dish', dish.img)}
+													alt={dish.title}
 													width={200}
 													height={200}
 													className="rounded-2xl border w-1/4"
 												/>
 												<div className="w-1/2 space-y-2 text-gray-700 text-start">
-													<h1 className="text-lg font-semibold">{dish.name}</h1>
+													<h1 className="text-lg font-semibold">
+														{dish.title}
+													</h1>
 													<p>{dish.description}</p>
 												</div>
 											</div>
@@ -80,7 +83,7 @@ export default function MenuDialog({ menu, open, setOpen }) {
 											<h1 className="text-lg font-semibold">Ingredientes</h1>
 											<ul>
 												{dish.ingredients.map((ingredient) => (
-													<p key={ingredient}>{ingredient}</p>
+													<p key={ingredient._id}>{ingredient.title}</p>
 												))}
 											</ul>
 										</div>

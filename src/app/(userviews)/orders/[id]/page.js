@@ -9,172 +9,55 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { getOrders } from '@/services/order.services';
-import { useQuery } from '@tanstack/react-query';
+import { useToast } from '@/components/ui/use-toast';
+import { editOrder, getOrder } from '@/services/order.services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
-
-const dishes = [
-	{
-		id: '1',
-		name: 'Katsudon',
-		description: 'Arroz con cerdo empanizado',
-		price: 120,
-		image: '/images/katsudon.jpg',
-		category: 'Japonesa',
-		company: 'Sushi Itto',
-		ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-	},
-	{
-		id: '2',
-		name: 'Sushi',
-		description: 'Arroz con cerdo empanizado',
-		price: 120,
-		image: '/images/katsudon.jpg',
-		category: 'Japonesa',
-		company: 'Sushi Itto',
-		ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-	},
-	{
-		id: '3',
-		name: 'Sushi',
-		description: 'Arroz con cerdo empanizado',
-		price: 120,
-		image: '/images/katsudon.jpg',
-		category: 'Japonesa',
-		company: 'Sushi Itto',
-		ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-	},
-];
-
-const menus = [
-	{
-		id: '1',
-		name: 'Sushi Itto',
-		description: 'Sushi, Japonesa',
-		image: '/images/katsudon.jpg',
-		company: 'Sushi Itto',
-		dishes: [
-			{
-				id: '1',
-				name: 'Katsudon',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-			{
-				id: '2',
-				name: 'Sushi',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-			{
-				id: '3',
-				name: 'Sushi',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-		],
-	},
-	{
-		id: '2',
-		name: 'Sushi Itto',
-		description: 'Sushi, Japonesa',
-		image: '/images/katsudon.jpg',
-		company: 'Sushi Itto',
-		dishes: [
-			{
-				id: '1',
-				name: 'Katsudon',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-			{
-				id: '2',
-				name: 'Sushi',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-			{
-				id: '3',
-				name: 'Sushi',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-		],
-	},
-	{
-		id: '3',
-		name: 'Sushi Itto',
-		description: 'Sushi, Japonesa',
-		image: '/images/katsudon.jpg',
-		company: 'Sushi Itto',
-		dishes: [
-			{
-				id: '1',
-				name: 'Katsudon',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-			{
-				id: '2',
-				name: 'Sushi',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-			{
-				id: '3',
-				name: 'Sushi',
-				description: 'Arroz con cerdo empanizado',
-				price: 120,
-				image: '/images/katsudon.jpg',
-				category: 'Japonesa',
-				company: 'Sushi Itto',
-				ingredients: ['Arroz', 'Cerdo', 'Huevo', 'Cebolla', 'Panko'],
-			},
-		],
-	},
-];
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Order({ params }) {
 	const { id } = params;
 	const { data: session, status } = useSession();
+	const queryClient = useQueryClient();
+	const router = useRouter();
 
 	const { data: orderData, status: orderStatus } = useQuery({
-		queryKey: ['order', id],
-		queryFn: () => getOrders(id),
+		queryKey: ['orders', id],
+		queryFn: () => getOrder(id),
+		select: (data) => data?.data,
 	});
+
+	useEffect(() => {
+		if (status != 'loading' && !session) {
+			router.push('/login');
+		}
+	}, [status, router, session]);
+
+	const { mutate, status: mutationStatus } = useMutation({
+		mutationFn: editOrder(id),
+	});
+
+	const { toast } = useToast();
+
+	function toggleOrderStatus() {
+		const newOrderStatus =
+			orderData.orderStatus === 'PAGADO' ? 'ENTREGADO' : 'PAGADO';
+		mutate(
+			{ orderStatus: newOrderStatus },
+			{
+				onSuccess: () => {
+					queryClient.invalidateQueries('orders');
+					toast({
+						title: 'El pedido ha sido actualizado',
+					});
+				},
+				onError: (e) => {
+					console.log(e);
+				},
+			}
+		);
+	}
 
 	return (
 		<div className="space-y-8">
@@ -185,62 +68,85 @@ export default function Order({ params }) {
 				<>
 					<section>
 						{status == 'authenticated' &&
-							session.user.user.role === 'COMPANY_ROLE' && (
+							session.user.user.rol === 'ENTERPRISE_ROLE' && (
 								<h2 className="text-xl font-semibold text-red-500">
-									{orderData?.user.user.name}
+									{orderData?.person[0].name}
 								</h2>
 							)}
 						{status == 'authenticated' &&
-							session.user.user.role === 'USER_ROLE' && (
+							session.user.user.rol === 'USER_ROLE' && (
 								<h2 className="text-xl font-semibold text-red-500">
-									{orderData?.user.user.company}
+									{orderData?.enterprise[0].title}
 								</h2>
 							)}
-						<h2 className="text-xl font-semibold text-red-500">Usuario</h2>
+
 						<p>
 							<span className="font-medium">Fecha del pedido:</span>{' '}
-							{new Date().toLocaleDateString()}
+							{new Date(orderData?.emitDate).toLocaleDateString()}
 						</p>
 					</section>
 
 					<section className="flex items-center justify-between">
 						<div className="text-center">
 							<h3 className="font-medium text-lg">Cantidad de personas</h3>
-							<p>4</p>
+							<p>
+								{orderData?.menuDishCount > 0
+									? orderData?.menuDishCount
+									: orderData?.dishCount}
+							</p>
 						</div>
 						<div className="text-center">
 							<h3 className="font-medium text-lg">Fecha de entrega</h3>
-							<p>{new Date().toLocaleDateString()}</p>
+							<p>{new Date(orderData?.deliverDate).toLocaleDateString()}</p>
 						</div>
 
-						{status == 'authenticated' &&
-							session.user.user.role === 'COMPANY_ROLE' && (
-								<Button className="bg-[#F86260]">Marcar como completada</Button>
-							)}
-						{status == 'authenticated' &&
-							session.user.user.role === 'USER_ROLE' && (
+						{(orderData?.orderStatus == 'CANCELADO' ||
+							orderData?.orderStatus == 'PENDIENTE') &&
+							status == 'authenticated' &&
+							session.user.user.rol === 'ENTERPRISE_ROLE' && (
 								<div className="text-center">
 									<h3 className="font-medium text-lg">Estado</h3>
-									<p>Pendiente</p>
+									<p>{orderData.orderStatus}</p>
 								</div>
 							)}
 
-						{/* if user show status here */}
-						<Button className="bg-[#F86260]">Marcar como completada</Button>
+						{status == 'authenticated' &&
+							session.user.user.rol === 'ENTERPRISE_ROLE' &&
+							(orderData?.orderStatus != 'CANCELADO' ||
+								orderData?.orderStatus != 'PENDIENTE') && (
+								<Button
+									className="bg-[#F86260] hover:bg-red-500"
+									onClick={toggleOrderStatus}
+								>
+									Marcar como{' '}
+									{orderData?.orderStatus === 'PAGADO' ? 'Entregado' : 'Pagado'}
+								</Button>
+							)}
+						{status == 'authenticated' &&
+							session.user.user.rol === 'USER_ROLE' && (
+								<div className="text-center">
+									<h3 className="font-medium text-lg">Estado</h3>
+									<p>{orderData.orderStatus}</p>
+								</div>
+							)}
 					</section>
 
-					<section>
-						<h2 className="text-xl font-semibold text-red-500">Platos</h2>
-						<div>
-							<OrderDishAccordion dishes={dishes} />
-						</div>
-					</section>
-					<section>
-						<h2 className="text-xl font-semibold text-red-500">Menus</h2>
-						<div>
-							<OrderMenuAccordion menus={menus} />
-						</div>
-					</section>
+					{orderData?.dishes.length > 0 && (
+						<section>
+							<h2 className="text-xl font-semibold text-red-500">Platos</h2>
+							<div>
+								<OrderDishAccordion dishes={orderData?.dishes} />
+							</div>
+						</section>
+					)}
+					{orderData?.menuDishes.length > 0 && (
+						<section>
+							<h2 className="text-xl font-semibold text-red-500">Menus</h2>
+							<div>
+								<OrderMenuAccordion menus={orderData?.menuDishes} />
+							</div>
+						</section>
+					)}
 				</>
 			)}
 		</div>

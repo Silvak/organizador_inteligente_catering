@@ -16,8 +16,9 @@ export default function CartEditMenuDialog({ menu }) {
 	const editMenu = useCartStore((state) => state.editMenu);
 
 	const { data, status } = useQuery({
-		queryKey: ['menu', menu.id],
-		queryFn: () => getMenu(menu.id),
+		queryKey: ['menu', menu._id],
+		queryFn: () => getMenu(menu._id),
+		select: (data) => data?.data,
 	});
 
 	function handleEditMenu() {
@@ -40,19 +41,19 @@ export default function CartEditMenuDialog({ menu }) {
 			<DialogContent>
 				<div className="flex flex-col gap-8">
 					<div>
-						<h1 className="text-2xl font-bold">{menu.name}</h1>
+						<h1 className="text-2xl font-bold">{menu.title}</h1>
 						<p>{menu.description}</p>
 					</div>
 
 					<EditMenuDishes
-						menu={menu}
+						menu={data}
 						tempDishes={tempDishes}
 						setTempDishes={setTempDishes}
 					/>
 				</div>
 
 				<Button
-					className="bg-[#F86260] rounded-md shadow-lg"
+					className="bg-[#F86260] hover:bg-red-500 rounded-md shadow-lg"
 					onClick={handleEditMenu}
 				>
 					Editar

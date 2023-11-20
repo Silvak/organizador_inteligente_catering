@@ -13,6 +13,7 @@ import MenuDialog from './MenuDialog';
 import { useState } from 'react';
 import { useCartStore } from '@/app/cartStore';
 import { useToast } from './ui/use-toast';
+import { getImgSrc } from '@/lib/utils';
 
 export default function MenuCard({ menu }) {
 	const [open, setOpen] = useState(false);
@@ -36,25 +37,25 @@ export default function MenuCard({ menu }) {
 
 			<CardHeader className="cursor-pointer" onClick={handleOpen}>
 				<Image
-					src={menu.image}
-					alt={menu.name}
+					src={getImgSrc('menuDish', menu.img)}
+					alt={menu.title}
 					width={300}
 					height={300}
-					className="rounded-2xl border"
+					className="rounded-2xl border h-[200px] overflow-hidden"
 				/>
 			</CardHeader>
 			<CardContent
 				className="text-center space-y-2 text-gray-700 cursor-pointer"
 				onClick={handleOpen}
 			>
-				<p>{menu.company}</p>
-				<CardTitle>{menu.name}</CardTitle>
+				<CardTitle>{menu.title}</CardTitle>
+				<p>{menu.description}</p>
 
-				<ul className="text-start">
+				{/* <ul className="text-start">
 					{menu.dishes.map((dish) => (
-						<li key={dish.id}>{dish.name}</li>
+						<li key={dish._id}>{dish.title}</li>
 					))}
-				</ul>
+				</ul> */}
 			</CardContent>
 
 			<CardFooter className="flex justify-between items-center">

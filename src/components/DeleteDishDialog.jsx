@@ -23,7 +23,7 @@ export default function DeleteDishDialog({ id }) {
 	const { mutate } = useMutation({
 		mutationFn: deleteDish(id),
 		onSuccess: () => {
-			queryClient.invalidateQueries('products');
+			queryClient.invalidateQueries(['dishes']);
 		},
 	});
 	const { toast } = useToast();

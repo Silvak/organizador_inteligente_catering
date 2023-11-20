@@ -7,7 +7,7 @@ export default function CartDishCard({ dish }) {
 		<Card className="rounded-3xl shadow-xl">
 			<CardHeader className="pb-2">
 				<div className="flex justify-between items-center">
-					<h2 className="text-lg font-semibold text-gray-700">{dish.name}</h2>
+					<h2 className="text-lg font-semibold text-gray-700">{dish.title}</h2>
 
 					<div className="flex gap-2 items-center">
 						<CartEditDishDialog dish={dish} />
